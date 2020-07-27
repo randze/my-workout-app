@@ -1,0 +1,13 @@
+# ignore mac files
+.DS_Store
+# ignore node modules
+node_modules/
+package-lock.json
+
+#lint ignore
+.eslintignore
+.eslintrc.json
+
+#other
+.vscode/
+.env
