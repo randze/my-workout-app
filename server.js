@@ -1,42 +1,39 @@
 const mongoose = require('mongoose')
 const express = require('express')
-
-const PORT = process.env.PORT || 8080
+const path = require('path')
+const db = require('./models');
 
 const app = express()
 
-mongoose.connect(process.env.MONGODB_URI || "mongodb://localhost/twoter",
+// mongoose connect
+mongoose.connect(process.env.MONGODB_URI || 'mongodb://localhost/workout',
     { useNewUrlParser: true, useUnifiedTopology: true, useCreateIndex: true })
 
-// parsing incoming data
+// express parsing incoming data
+const PORT = process.env.PORT || 8080
 app.use(express.urlencoded({ extended: true }))
 app.use(express.json())
 
 // serving public folder
 app.use(express.static('public'))
+public = path.join(__dirname, "/public")
 
-const db = require('./models');
-
-
-// endpoints
-app.get('/', async function (req, res) {
-    // get the list of tweets
-    const userList = await db.User.find({}).populate('tweets')
-
-    res.send(userList)
+// send index
+app.get('/', (req, res) => {
+    res.sendFile('./index.html', {root: public})
 })
 
-app.post('/', async function (req, res) {
-    console.log(`[POST] /tweets, body:`, req.body)
-    try {
-        
-    } catch (err) {
-        console.log(`x sorry something went wrong`, err)
-        res.send({ status: false, message: `Sorry something went wrong: ${err.message}` })
-    }
+// send exercise
+app.get('/exercise', (req, res) => {
+    res.sendFile('./exercise.html', {root: public})
 })
 
+// send stats
+app.get('/stats', (req, res) => {
+    res.sendFile('./stats.html', {root: public})
+})
 
+// app listener
 app.listen(PORT, function () {
     console.log(`Serving app on: http://localhost:${PORT}`)
 })
