@@ -7,7 +7,7 @@ const app = express()
 
 // mongoose connect
 mongoose.connect(process.env.MONGODB_URI || 'mongodb://localhost/workout',
-    { useNewUrlParser: true, useUnifiedTopology: true, useCreateIndex: true })
+    { useNewUrlParser: true, useUnifiedTopology: true, useCreateIndex: true, useFindAndModify: false })
 
 // express parsing incoming data
 const PORT = process.env.PORT || 8080
@@ -31,6 +31,36 @@ app.get('/exercise', (req, res) => {
 // send stats
 app.get('/stats', (req, res) => {
     res.sendFile('./stats.html', {root: public})
+})
+
+// API STUFF
+// get workouts
+app.get('/api/workouts', async (req, res) => {
+    const data = await db.Workout.find({})
+    res.json(data)
+})
+
+// post workouts
+app.post('/api/workouts', ({ body }, res) => {
+    db.Workout.create(body).then(data => {
+        res.json(data)
+    })
+})
+
+// put workout
+app.put('/api/workouts/:id', async ({ body, params }, res) => {
+    const data = await db.Workout.findByIdAndUpdate(
+        params.id,
+        { $push: { exercises: body }, $inc: { totalDuration: body.duration } },
+        { new: true, runValidators: true })
+    
+    res.json(data)
+})
+
+// workout range
+app.get('/api/workouts/range', async (req, res) => {
+    const data = await db.Workout.find({})
+    res.json(data)
 })
 
 // app listener
