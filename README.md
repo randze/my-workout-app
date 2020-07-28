@@ -18,4 +18,4 @@ Just a simple fitness tracker app made using JavaScript, NodeJS, Express, MongoD
 - Improve responsiveness
 
 ## Links
-[Deployed App]()
+[Deployed App](https://randze-workout-app.herokuapp.com/)
